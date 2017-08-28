@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <util:properties id="redis" location="classpath:redis.properties"></util:properties>
+
+
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="#{redis['redis.maxIdle']}"/>
+        <property name="maxTotal" value="#{redis['redis.maxTotal']}"/>
+        <property name="testOnBorrow" value="#{redis['redis.testOnBorrow']}"/>
+        <property name="testOnReturn" value="#{redis['redis.testOnBorrow']}"/>
+        <!--新版本 不支持一下2个属性-->
+        <!--<property name="maxActive" value="${redis.maxActive}"/>-->
+        <!--<property name="maxWait" value="${redis.maxWait}"/>-->
+    </bean>
+
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
+        <constructor-arg name="host" value="#{redis['redis.host']}"/>
+        <constructor-arg name="port" value="#{redis['redis.port']}"/>
+        <constructor-arg name="timeout" value="#{redis['redis.timeout']}"/>
+        <!--<constructor-arg name="password" value="#{redis['redis.pass']}"/>-->
+        <!--<constructor-arg name="database" value="#{redis['redis.db']}"/>-->
+    </bean>
+
+    <bean id="jedisUtil" class="com.github.zhangkaitao.shiro.chapter24.utils.JedisUtils"/>
+
+</beans>
